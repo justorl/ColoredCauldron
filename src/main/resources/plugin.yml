@@ -1,0 +1,6 @@
+name: ColoredCauldron
+version: '1.1.0'
+main: com.pulse.coloredCauldron.ColoredCauldron
+api-version: '1.21'
+authors: [ o_orl ]
+description: Colored Cauldrons!

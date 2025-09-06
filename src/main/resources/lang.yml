@@ -1,0 +1,3 @@
+messages:
+  reload: "<gray>ColoredCauldron • <green>Plugin reloaded"
+  reset: "<gray>ColoredCauldron • <green>Cleared water locations"
