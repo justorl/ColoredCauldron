@@ -60,10 +60,11 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
     }
 
     fun mix(dye: Color) {
-        val currentColor = entity.backgroundColor ?: Color.WHITE
-
+        val currentColor = entity.backgroundColor ?: Util.hex2rgb(plugin.config.getString("ColoredWater.default-color")!!, 200)
         var newColor = dye
-        if (level != 0) newColor = currentColor.mixColors(dye)
+
+        if (newColor == (Color.WHITE)) newColor = Util.hex2rgb(plugin.config.getString("ColoredWater.default-color")!!, 200)
+        else if (level != 0) newColor = currentColor.mixColors(dye)
 
         color = Color.fromARGB(
             plugin.config.getInt("ColoredWater.alpha"),
@@ -74,7 +75,7 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
     }
 
     fun mix(dye: DyeColor) {
-        val currentColor = entity.backgroundColor!!
+        val currentColor = entity.backgroundColor ?: Util.hex2rgb(plugin.config.getString("ColoredWater.default-color")!!, 200)
         val newColor = currentColor.mixDyes(dye)
 
         color = Color.fromARGB(

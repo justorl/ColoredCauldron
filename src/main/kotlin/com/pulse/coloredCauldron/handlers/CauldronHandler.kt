@@ -29,6 +29,7 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
         val player = e.player.takeIf { it.gameMode != GameMode.SPECTATOR } ?: return
         val block = e.clickedBlock?.takeIf { e.action == Action.RIGHT_CLICK_BLOCK && (it.type == Material.WATER_CAULDRON || it.type == Material.CAULDRON) } ?: return
         val wc = WCManager.get(block.location) ?: return
+        wc.update()
         val item = e.item ?: return
 
         when (item.type) {
@@ -46,22 +47,19 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
 
                     Util.runLater(plugin.config.getInt("DyeAnimation.delay").toLong()) {
                         dropped.remove()
-                        WCManager.get(block.location)?.let { updated ->
-                            updated.mix(Util.dyeColors[item.type]!!)
-                            Util.playConfigSound(player, "DyeAnimation.sound")
+                        wc.mix(Util.dyeColors[item.type]!!)
+                        Util.playConfigSound(player, "DyeAnimation.sound")
 
-                            block.world.spawnParticle(
-                                Particle.DUST,
-                                block.location.add(0.5, 0.95, 0.5),
-                                7,
-                                0.15,
-                                0.15,
-                                0.15,
-                                Particle.DustOptions(updated.color, 0.95f)
-                            )
-                        }
+                        block.world.spawnParticle(
+                            Particle.DUST,
+                            block.location.add(0.5, 0.95, 0.5),
+                            7,
+                            0.15,
+                            0.15,
+                            0.15,
+                            Particle.DustOptions(wc.color, 0.95f)
+                        )
                     }
-
                 } else wc.mix(Util.dyeColors[item.type]!!)
             }
 
