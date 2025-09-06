@@ -1,3 +1,4 @@
 messages:
   reload: "<gray>ColoredCauldron • <green>Plugin reloaded"
   reset: "<gray>ColoredCauldron • <green>Cleared water locations"
+  version: "<gray>ColoredCauldron • <gray>Plugin version: <version>"

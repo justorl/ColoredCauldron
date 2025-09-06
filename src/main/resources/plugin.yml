@@ -1,5 +1,5 @@
 name: ColoredCauldron
-version: '1.1.1'
+version: '${project.version}'
 main: com.pulse.coloredCauldron.ColoredCauldron
 api-version: '1.21'
 authors: [ o_orl ]

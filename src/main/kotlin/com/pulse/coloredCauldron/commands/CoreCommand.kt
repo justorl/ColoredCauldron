@@ -3,6 +3,7 @@ package com.pulse.coloredCauldron.commands
 import com.pulse.coloredCauldron.CCInstance.plugin
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.executors.CommandExecutor
+import net.kyori.adventure.text.Component
 
 object CoreCommand {
     fun register() {
@@ -31,6 +32,17 @@ object CoreCommand {
                         plugin.waterStorage.resetWater()
 
                         sender.sendMessage(plugin.langManager.getMessage("reset"))
+                    })
+            )
+            .withSubcommand(
+                CommandAPICommand("version")
+                    .withPermission("cc.command.version")
+                    .executes(CommandExecutor { sender, _ ->
+                        plugin.waterStorage.resetWater()
+
+                        sender.sendMessage(plugin.langManager.getMessage("version",
+                            "version" to Component.text(plugin.pluginMeta.version)
+                        ))
                     })
             )
             .register()
