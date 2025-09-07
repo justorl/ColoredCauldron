@@ -6,7 +6,7 @@
 
     <groupId>com.pulse</groupId>
     <artifactId>ColoredCauldron</artifactId>
-    <version>v1.1.2</version>
+    <version>v1.1.3</version>
     <packaging>jar</packaging>
 
     <name>ColoredCauldron</name>

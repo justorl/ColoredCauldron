@@ -38,8 +38,6 @@ object CoreCommand {
                 CommandAPICommand("version")
                     .withPermission("cc.command.version")
                     .executes(CommandExecutor { sender, _ ->
-                        plugin.waterStorage.resetWater()
-
                         sender.sendMessage(plugin.langManager.getMessage("version",
                             "version" to Component.text(plugin.pluginMeta.version)
                         ))
