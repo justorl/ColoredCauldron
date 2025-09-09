@@ -4,3 +4,4 @@ main: com.pulse.coloredCauldron.ColoredCauldron
 api-version: '1.21'
 authors: [ o_orl ]
 description: Dye your cauldrons!
+folia-supported: true

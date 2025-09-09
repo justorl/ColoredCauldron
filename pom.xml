@@ -6,7 +6,7 @@
 
     <groupId>com.pulse</groupId>
     <artifactId>ColoredCauldron</artifactId>
-    <version>v1.1.3</version>
+    <version>v1.1.4</version>
     <packaging>jar</packaging>
 
     <name>ColoredCauldron</name>
@@ -66,6 +66,10 @@
                                     <pattern>dev.jorel.commandapi</pattern>
                                     <shadedPattern>com.pulse.coloredCauldron.libs.commandapi</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.tcoded.folialib</pattern>
+                                    <shadedPattern>com.pulse.coloredCauldron.libs.folialib</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>
@@ -102,9 +106,19 @@
             <id>codemc</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>tcoded-releases</id>
+            <url>https://repo.tcoded.com/releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.tcoded</groupId>
+            <artifactId>FoliaLib</artifactId>
+            <version>0.5.1</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>

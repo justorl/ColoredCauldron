@@ -1,5 +1,6 @@
 package com.pulse.coloredCauldron.logic
 
+import com.pulse.coloredCauldron.CCInstance.foliaLib
 import com.pulse.coloredCauldron.CCInstance.plugin
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -37,7 +38,7 @@ object Util {
     )
 
     fun runLater(delay: Long, task: () -> Unit) {
-        Bukkit.getScheduler().runTaskLater(plugin, Runnable(task), delay)
+        foliaLib.scheduler.runLater(task, delay)
     }
 
     fun Block.getShift(face: BlockFace): Location {
@@ -46,6 +47,7 @@ object Util {
 
     fun playConfigSound(player: Player, path: String) {
         val soundKey = plugin.config.getString(path) ?: return
+
         player.playSound(Sound.sound(Key.key(soundKey), Sound.Source.MASTER, 1f, 1f))
     }
 
@@ -54,6 +56,7 @@ object Util {
         val r = clean.substring(0, 2).toInt(16)
         val g = clean.substring(2, 4).toInt(16)
         val b = clean.substring(4, 6).toInt(16)
+
         return Color.fromARGB(alpha, r, g, b)
     }
 

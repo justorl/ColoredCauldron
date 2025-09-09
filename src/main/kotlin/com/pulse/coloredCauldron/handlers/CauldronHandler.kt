@@ -2,7 +2,7 @@ package com.pulse.coloredCauldron.handlers
 
 import com.pulse.coloredCauldron.logic.Util
 import com.pulse.coloredCauldron.logic.Util.getShift
-import com.pulse.coloredCauldron.logic.WCManager
+import com.pulse.coloredCauldron.water.WCManager
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
