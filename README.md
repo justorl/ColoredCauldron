@@ -9,4 +9,7 @@ Requires **Java 21+** and better works on Paper-based servers.
 - Brush and item dyeing support
 - Configurable sounds and animations
 - Optional 1-tick delay to hide vanilla water flicker
-- Open-source
+- Open-source & Lightweight
+
+## Download
+You can download releases at [Modrinth](https://modrinth.com/plugin/coloredcauldron)
