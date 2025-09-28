@@ -1,6 +1,6 @@
 name: ColoredCauldron
 version: '${project.version}'
-main: com.pulse.coloredCauldron.ColoredCauldron
+main: com.pulse.coloredcauldron.ColoredCauldron
 api-version: '1.21'
 authors: [ o_orl ]
 description: Dye your cauldrons!

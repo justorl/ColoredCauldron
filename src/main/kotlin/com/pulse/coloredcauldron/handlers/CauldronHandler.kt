@@ -1,8 +1,16 @@
-package com.pulse.coloredCauldron.handlers
+package com.pulse.coloredcauldron.handlers
 
-import com.pulse.coloredCauldron.logic.Util
-import com.pulse.coloredCauldron.logic.Util.getShift
-import com.pulse.coloredCauldron.water.WCManager
+import com.pulse.coloredcauldron.CCInstance.configManager
+import com.pulse.coloredcauldron.CCInstance.foliaLib
+import com.pulse.coloredcauldron.config.ConfigKeys.ANIM_DELAY
+import com.pulse.coloredcauldron.config.ConfigKeys.ANIM_ENABLED
+import com.pulse.coloredcauldron.config.ConfigKeys.ANIM_SOUND
+import com.pulse.coloredcauldron.config.ConfigKeys.DYE_WATER_ENABLED
+import com.pulse.coloredcauldron.logic.Util
+import com.pulse.coloredcauldron.logic.Util.getShift
+import com.pulse.coloredcauldron.logic.Util.playConfigSound
+import com.pulse.coloredcauldron.logic.Util.dyeColor
+import com.pulse.coloredcauldron.water.WCManager
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -21,46 +29,60 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
 
     @EventHandler
     fun onCauldronPlace(e: BlockPlaceEvent) {
-        e.block.takeIf { it.type == Material.CAULDRON }?.let { WCManager.spawn(it.location) }
+        if (e.block.type == Material.CAULDRON) WCManager.spawn(e.block.location)
+    }
+
+    @EventHandler
+    fun onCauldronRemove(e: BlockBreakEvent) {
+        if (WCManager.get(e.block.location) != null)
+            WCManager.remove(e.block.location)
     }
 
     @EventHandler
     fun onCauldronClick(e: PlayerInteractEvent) {
         val player = e.player.takeIf { it.gameMode != GameMode.SPECTATOR } ?: return
         val block = e.clickedBlock?.takeIf { e.action == Action.RIGHT_CLICK_BLOCK && (it.type == Material.WATER_CAULDRON || it.type == Material.CAULDRON) } ?: return
+        val item = e.item ?: return
+
         val wc = WCManager.get(block.location) ?: return
         wc.update()
-        val item = e.item ?: return
 
         when (item.type) {
             in Util.dyeColors.keys -> {
+                if (!configManager.getBoolean(DYE_WATER_ENABLED) || wc.level == 0) return
+
                 e.isCancelled = true
                 player.swingMainHand()
-                Util.playConfigSound(player, "ColoredWater.sound")
+                player.playConfigSound("ColoredWater.sound")
 
                 if (player.gameMode != GameMode.CREATIVE) player.inventory.removeItem(ItemStack(item.type, 1))
-                if (plugin.config.getBoolean("DyeAnimation.enabled")) {
-                    val dropped = block.world.dropItem(block.location.add(0.5, plugin.config.getInt("DyeAnimation.height").toDouble(), 0.5), ItemStack(item.type)).apply {
+
+                if (configManager.getBoolean(ANIM_ENABLED)) {
+                    val dropped = block.world.dropItem(block.location.clone().add(0.5, plugin.config.getInt("DyeAnimation.height").toDouble(), 0.5), ItemStack(item.type)).apply {
                         pickupDelay = Int.MAX_VALUE
                         velocity = Vector(0, 0, 0)
                     }
 
-                    Util.runLater(plugin.config.getInt("DyeAnimation.delay").toLong()) {
-                        dropped.remove()
-                        wc.mix(Util.dyeColors[item.type]!!)
-                        Util.playConfigSound(player, "DyeAnimation.sound")
+                    Util.runLater(plugin.config.getInt(ANIM_DELAY).toLong()) {
+                        player.playConfigSound(ANIM_SOUND)
 
-                        block.world.spawnParticle(
-                            Particle.DUST,
-                            block.location.add(0.5, 0.95, 0.5),
-                            7,
-                            0.15,
-                            0.15,
-                            0.15,
-                            Particle.DustOptions(wc.color, 0.95f)
-                        )
+                        foliaLib.scheduler.runAtLocation(block.location) {
+                            dropped.remove()
+                            wc.mix(item.type.dyeColor()!!)
+
+                            block.world.spawnParticle(
+                                Particle.DUST,
+                                block.location.clone().add(0.5, 0.95, 0.5),
+                                7,
+                                0.15,
+                                0.15,
+                                0.15,
+                                Particle.DustOptions(wc.color, 0.95f)
+                            )
+                        }
                     }
-                } else wc.mix(Util.dyeColors[item.type]!!)
+
+                } else wc.mix(item.type.dyeColor()!!)
             }
 
             Material.GLASS_BOTTLE -> {
@@ -68,8 +90,7 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
 
                 e.isCancelled = true
                 player.swingMainHand()
-
-                Util.playConfigSound(player, "ColoredPotionMechanic.sound")
+                player.playConfigSound("ColoredPotionMechanic.sound")
                 wc.level -= 1
 
                 val potion = Util.getColoredPotion(wc.color)
@@ -84,8 +105,7 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
 
                 e.isCancelled = true
                 player.swingMainHand()
-
-                Util.playConfigSound(player, "ColoredWater.sound")
+                player.playConfigSound("ColoredWater.sound")
 
                 wc.mix(Util.getPotionColor(item))
                 wc.level += 1
@@ -98,31 +118,18 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
 
                 e.isCancelled = true
                 player.swingMainHand()
-
-                Util.playConfigSound(player, "ColoredPotionMechanic.sound")
+                player.playConfigSound("ColoredPotionMechanic.sound")
                 wc.level -= 1
 
                 player.inventory.setItem(player.inventory.heldItemSlot, Util.adjustItemColor(wc.color, item))
-            }
-
-            Material.WATER_BUCKET -> {
-                if (block.type != Material.CAULDRON) return
-                wc.update()
             }
 
             Material.BUCKET -> {
                 if (block.type != Material.WATER_CAULDRON) return
                 wc.level = 0
             }
-            else -> {}
-        }
-    }
 
-    @EventHandler
-    fun onCauldronRemove(e: BlockBreakEvent) {
-        e.block.takeIf {
-            (it.type == Material.WATER_CAULDRON || it.type == Material.CAULDRON) && WCManager.get(it.location) != null }?.let {
-            WCManager.remove(it.location)
+            else -> {}
         }
     }
 

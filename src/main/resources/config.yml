@@ -4,17 +4,19 @@ ColoredWater:
 # More alpha means more color accuracy but less visible water texture
 # Default: 200 / Max: 255
   alpha: 200
-# Изначальный цвет "воды". Прозрачен, и появляется только при первом изменении цвета
-# The initial "water" color. By default, it is transparent and only appears when the color is changed
+# Изначальный цвет воды. Прозрачен, и появляется только при первом изменении цвета
+# The initial water color. By default, it is transparent and only appears when the color is changed
   default-color: "#26478a"
   sound: item.bottle.fill
-DyeAnimation:
-  enabled: true
-  height: 1
-  delay: 7
-  sound: entity.generic.splash
 ColoredPotionMechanic:
   enabled: true
   sound: item.bottle.empty
+DyeWaterMechanic:
+  enabled: true
+  animation:
+    enabled: true
+    height: 1
+    delay: 7
+    sound: entity.generic.splash
 DyeItemsMechanic:
   enabled: true

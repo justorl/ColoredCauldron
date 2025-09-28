@@ -1,6 +1,9 @@
-package com.pulse.coloredCauldron.commands
+package com.pulse.coloredcauldron.commands
 
-import com.pulse.coloredCauldron.CCInstance.plugin
+import com.pulse.coloredcauldron.CCInstance.configManager
+import com.pulse.coloredcauldron.CCInstance.langManager
+import com.pulse.coloredcauldron.CCInstance.plugin
+import com.pulse.coloredcauldron.CCInstance.waterStorage
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.executors.CommandExecutor
 import net.kyori.adventure.text.Component
@@ -18,27 +21,27 @@ object CoreCommand {
                 CommandAPICommand("reload")
                     .withPermission("cc.command.reload")
                     .executes(CommandExecutor { sender, _ ->
-                        plugin.configManager.reload()
-                        plugin.langManager.reload()
-                        plugin.waterStorage.reload()
+                        configManager.reload()
+                        langManager.reload()
+                        waterStorage.reload()
 
-                        sender.sendMessage(plugin.langManager.getMessage("reload"))
+                        sender.sendMessage(langManager.getMessage("reload"))
                     })
             )
             .withSubcommand(
                 CommandAPICommand("reset")
                     .withPermission("cc.command.reset")
                     .executes(CommandExecutor { sender, _ ->
-                        plugin.waterStorage.resetWater()
+                        waterStorage.reset()
 
-                        sender.sendMessage(plugin.langManager.getMessage("reset"))
+                        sender.sendMessage(langManager.getMessage("reset"))
                     })
             )
             .withSubcommand(
                 CommandAPICommand("version")
                     .withPermission("cc.command.version")
                     .executes(CommandExecutor { sender, _ ->
-                        sender.sendMessage(plugin.langManager.getMessage("version",
+                        sender.sendMessage(langManager.getMessage("version",
                             "version" to Component.text(plugin.pluginMeta.version)
                         ))
                     })

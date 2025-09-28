@@ -1,8 +1,11 @@
-package com.pulse.coloredCauldron.water
+package com.pulse.coloredcauldron.water
 
-import com.pulse.coloredCauldron.CCInstance
-import com.pulse.coloredCauldron.CCInstance.foliaLib
-import com.pulse.coloredCauldron.logic.Util
+import com.pulse.coloredcauldron.CCInstance.configManager
+import com.pulse.coloredcauldron.CCInstance.foliaLib
+import com.pulse.coloredcauldron.CCInstance.waterStorage
+import com.pulse.coloredcauldron.config.ConfigKeys.DEFAULT_ALPHA
+import com.pulse.coloredcauldron.config.ConfigKeys.DEFAULT_COLOR
+import com.pulse.coloredcauldron.logic.Util
 import net.kyori.adventure.text.Component
 import org.bukkit.Color
 import org.bukkit.DyeColor
@@ -29,12 +32,13 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
                 }
 
                 val cauldronData = block.blockData as? Levelled ?: return
+
                 cauldronData.level = value.coerceAtMost(cauldronData.maximumLevel)
                 block.blockData = cauldronData
             } else {
                 block.type = Material.CAULDRON
                 entity.backgroundColor = Util.hex2rgb(
-                    CCInstance.plugin.config.getString("ColoredWater.default-color")!!,
+                    configManager.getString(DEFAULT_COLOR),
                     0
                 )
             }
@@ -57,19 +61,19 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
     }
 
     fun remove() {
-        CCInstance.plugin.waterStorage.removeWater(entity)
+        waterStorage.remove(entity)
         entity.remove()
     }
 
     fun mix(dye: Color) {
-        val currentColor = entity.backgroundColor ?: Util.hex2rgb(CCInstance.plugin.config.getString("ColoredWater.default-color")!!, 200)
+        val currentColor = entity.backgroundColor ?: Util.hex2rgb(configManager.getString(DEFAULT_COLOR), 200)
         var newColor = dye
 
-        if (newColor == (Color.WHITE)) newColor = Util.hex2rgb(CCInstance.plugin.config.getString("ColoredWater.default-color")!!, 200)
+        if (newColor == (Color.WHITE)) newColor = Util.hex2rgb(configManager.getString(DEFAULT_COLOR), 200)
         else if (level != 0) newColor = currentColor.mixColors(dye)
 
         color = Color.fromARGB(
-            CCInstance.plugin.config.getInt("ColoredWater.alpha"),
+            configManager.getInt(DEFAULT_ALPHA),
             newColor.red,
             newColor.green,
             newColor.blue
@@ -77,11 +81,11 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
     }
 
     fun mix(dye: DyeColor) {
-        val currentColor = entity.backgroundColor ?: Util.hex2rgb(CCInstance.plugin.config.getString("ColoredWater.default-color")!!, 200)
+        val currentColor = entity.backgroundColor ?: Util.hex2rgb(configManager.getString(DEFAULT_COLOR), 200)
         val newColor = currentColor.mixDyes(dye)
 
         color = Color.fromARGB(
-            CCInstance.plugin.config.getInt("ColoredWater.alpha"),
+            configManager.getInt(DEFAULT_ALPHA),
             newColor.red,
             newColor.green,
             newColor.blue

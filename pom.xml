@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pulse</groupId>
-    <artifactId>ColoredCauldron</artifactId>
-    <version>v1.1.4</version>
+    <artifactId>coloredcauldron</artifactId>
+    <version>v1.2.0</version>
     <packaging>jar</packaging>
 
     <name>ColoredCauldron</name>
@@ -52,23 +52,27 @@
                             <relocations>
                                 <relocation>
                                     <pattern>kotlin</pattern>
-                                    <shadedPattern>com.pulse.coloredCauldron.libs.kotlin</shadedPattern>
+                                    <shadedPattern>com.pulse.coloredcauldron.shadow.kotlin</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.jetbrains.annotations</pattern>
-                                    <shadedPattern>com.pulse.coloredCauldron.libs.jetbrains.annotations</shadedPattern>
+                                    <shadedPattern>com.pulse.coloredcauldron.shadow.jetbrains.annotations</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.intellij.lang.annotations</pattern>
-                                    <shadedPattern>com.pulse.coloredCauldron.libs.intellij.annotations</shadedPattern>
+                                    <shadedPattern>com.pulse.coloredcauldron.shadow.intellij.annotations</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>dev.jorel.commandapi</pattern>
-                                    <shadedPattern>com.pulse.coloredCauldron.libs.commandapi</shadedPattern>
+                                    <shadedPattern>com.pulse.coloredcauldron.shadow.commandapi</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.tcoded.folialib</pattern>
-                                    <shadedPattern>com.pulse.coloredCauldron.libs.folialib</shadedPattern>
+                                    <shadedPattern>com.pulse.coloredcauldron.shadow.folialib</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.ktorm</pattern>
+                                    <shadedPattern>com.pulse.coloredcauldron.shadow.ktorm</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
@@ -132,9 +136,14 @@
         </dependency>
         <dependency>
             <groupId>dev.jorel</groupId>
-            <artifactId>commandapi-bukkit-shade-mojang-mapped</artifactId>
+            <artifactId>commandapi-bukkit-shade</artifactId>
             <version>10.1.2</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ktorm</groupId>
+            <artifactId>ktorm-core</artifactId>
+            <version>4.1.1</version>
         </dependency>
     </dependencies>
 </project>

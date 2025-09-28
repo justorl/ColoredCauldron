@@ -1,37 +1,33 @@
-package com.pulse.coloredCauldron
+package com.pulse.coloredcauldron
 
-import com.pulse.coloredCauldron.commands.CoreCommand
-import com.pulse.coloredCauldron.config.ConfigManager
-import com.pulse.coloredCauldron.config.LangManager
-import com.pulse.coloredCauldron.handlers.CauldronHandler
-import com.pulse.coloredCauldron.config.WaterStorage
+import com.pulse.coloredcauldron.CCInstance.configManager
+import com.pulse.coloredcauldron.CCInstance.langManager
+import com.pulse.coloredcauldron.CCInstance.waterStorage
+import com.pulse.coloredcauldron.commands.CoreCommand
+import com.pulse.coloredcauldron.config.ConfigManager
+import com.pulse.coloredcauldron.config.LangManager
+import com.pulse.coloredcauldron.handlers.CauldronHandler
+import com.pulse.coloredcauldron.config.WaterStorage
 import com.tcoded.folialib.FoliaLib
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import org.bukkit.plugin.java.JavaPlugin
 
 class ColoredCauldron : JavaPlugin() {
-    lateinit var configManager: ConfigManager
-        private set
-
-    lateinit var langManager: LangManager
-        private set
-
-    lateinit var waterStorage: WaterStorage
-        private set
 
     override fun onEnable() {
+        // api
         CommandAPI.onEnable()
 
         // lateinit
         CCInstance.plugin = this
         CCInstance.foliaLib = FoliaLib(this)
 
-        configManager = ConfigManager(this)
-        langManager = LangManager(this)
-        waterStorage = WaterStorage(this)
-
         // configs
+        configManager = ConfigManager()
+        langManager = LangManager()
+        waterStorage = WaterStorage()
+
         configManager.reload()
         langManager.reload()
         waterStorage.reload()

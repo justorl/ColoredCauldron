@@ -1,0 +1,109 @@
+package com.pulse.coloredcauldron.logic
+
+import com.pulse.coloredcauldron.CCInstance.foliaLib
+import com.pulse.coloredcauldron.CCInstance.plugin
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
+import org.bukkit.Color
+import org.bukkit.DyeColor
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.inventory.meta.PotionMeta
+import org.bukkit.potion.PotionType
+import java.io.File
+
+object Util {
+
+    val dyeColors = mapOf(
+        Material.WHITE_DYE to DyeColor.WHITE,
+        Material.LIGHT_GRAY_DYE to DyeColor.LIGHT_GRAY,
+        Material.GRAY_DYE to DyeColor.GRAY,
+        Material.BLACK_DYE to DyeColor.BLACK,
+        Material.RED_DYE to DyeColor.RED,
+        Material.BLUE_DYE to DyeColor.BLUE,
+        Material.BROWN_DYE to DyeColor.BROWN,
+        Material.ORANGE_DYE to DyeColor.ORANGE,
+        Material.YELLOW_DYE to DyeColor.YELLOW,
+        Material.LIME_DYE to DyeColor.LIME,
+        Material.GREEN_DYE to DyeColor.GREEN,
+        Material.LIGHT_BLUE_DYE to DyeColor.LIGHT_BLUE,
+        Material.CYAN_DYE to DyeColor.CYAN,
+        Material.PURPLE_DYE to DyeColor.PURPLE,
+        Material.MAGENTA_DYE to DyeColor.MAGENTA,
+        Material.PINK_DYE to DyeColor.PINK
+    )
+
+    fun Material.dyeColor(): DyeColor? {
+        return dyeColors[this]
+    }
+
+    fun reloadYaml(file: File, name: String): YamlConfiguration {
+        if (!file.exists()) {
+            plugin.saveResource(name, false)
+        }
+
+        val userYaml = YamlConfiguration.loadConfiguration(file)
+
+        val defaultYaml = YamlConfiguration.loadConfiguration(
+            plugin.getResource(name)?.reader() ?: return userYaml
+        )
+
+        defaultYaml.getKeys(true)
+            .filterNot { userYaml.contains(it) }
+            .forEach { key -> userYaml.set(key, defaultYaml.get(key)) }
+
+        userYaml.save(file)
+        return userYaml
+    }
+    
+    fun runLater(delay: Long, task: () -> Unit) {
+        foliaLib.scheduler.runLater(task, delay)
+    }
+
+    fun Block.getShift(face: BlockFace): Location {
+        return this.location.add(face.direction)
+    }
+
+    fun Player.playConfigSound(path: String) {
+        val soundKey = plugin.config.getString(path) ?: return
+
+        this.playSound(Sound.sound(Key.key(soundKey), Sound.Source.MASTER, 1f, 1f))
+    }
+
+    fun hex2rgb(hex: String, alpha: Int): Color {
+        val clean = hex.removePrefix("#")
+        val r = clean.substring(0, 2).toInt(16)
+        val g = clean.substring(2, 4).toInt(16)
+        val b = clean.substring(4, 6).toInt(16)
+
+        return Color.fromARGB(alpha, r, g, b)
+    }
+
+    fun adjustItemColor(color: Color, item: ItemStack): ItemStack {
+        return item.apply {
+            val meta = itemMeta as? LeatherArmorMeta ?: return@apply
+            meta.setColor(color)
+            itemMeta = meta
+        }
+    }
+
+    fun getColoredPotion(color: Color): ItemStack {
+        return ItemStack(Material.POTION).apply {
+            val meta = itemMeta as PotionMeta
+            meta.basePotionType = PotionType.WATER
+            meta.color = color
+            itemMeta = meta
+        }
+    }
+
+    fun getPotionColor(item: ItemStack?): Color {
+        val meta = (item?.itemMeta ?: return Color.WHITE) as? PotionMeta ?: return Color.WHITE
+        return meta.color ?: Color.WHITE
+    }
+}
