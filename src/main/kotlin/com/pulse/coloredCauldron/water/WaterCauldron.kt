@@ -42,10 +42,10 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
         }
 
     init {
-        prepare()
+        init()
     }
 
-    private fun prepare() {
+    private fun init() {
         entity.text(Component.text("   "))
 
         entity.transformation = entity.transformation.apply {
@@ -92,7 +92,7 @@ class WaterCauldron(private val entity: TextDisplay, private val block: Block) {
         val waterHeight = listOf(0.2f, 0.58f, 0.755f, 0.939f)
 
         entity.transformation = entity.transformation.apply {
-            translation.set(0.45f, -0.90F, waterHeight.getOrElse(level) { 0.2f })
+            translation.set(0.45f, -0.90F, waterHeight.getOrElse(level) { waterHeight[0] })
         }
     }
 }
