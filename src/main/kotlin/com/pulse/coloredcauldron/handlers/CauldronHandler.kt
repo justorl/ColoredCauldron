@@ -4,12 +4,17 @@ import com.pulse.coloredcauldron.CCInstance.configManager
 import com.pulse.coloredcauldron.CCInstance.foliaLib
 import com.pulse.coloredcauldron.config.ConfigKeys.ANIM_DELAY
 import com.pulse.coloredcauldron.config.ConfigKeys.ANIM_ENABLED
-import com.pulse.coloredcauldron.config.ConfigKeys.ANIM_SOUND
+import com.pulse.coloredcauldron.config.ConfigKeys.DYE_ITEMS_ENABLED
+import com.pulse.coloredcauldron.config.ConfigKeys.SPLASH_SOUND
 import com.pulse.coloredcauldron.config.ConfigKeys.DYE_WATER_ENABLED
+import com.pulse.coloredcauldron.config.ConfigKeys.EMPTYING_SOUND
+import com.pulse.coloredcauldron.config.ConfigKeys.FILL_SOUND
+import com.pulse.coloredcauldron.config.ConfigKeys.POTION_ENABLED
+import com.pulse.coloredcauldron.logic.DyeUtil
 import com.pulse.coloredcauldron.logic.Util
 import com.pulse.coloredcauldron.logic.Util.getShift
 import com.pulse.coloredcauldron.logic.Util.playConfigSound
-import com.pulse.coloredcauldron.logic.Util.dyeColor
+import com.pulse.coloredcauldron.logic.DyeUtil.dyeColor
 import com.pulse.coloredcauldron.water.WCManager
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -48,12 +53,12 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
         wc.update()
 
         when (item.type) {
-            in Util.dyeColors.keys -> {
+            in DyeUtil.dyeColors.keys -> {
                 if (!configManager.getBoolean(DYE_WATER_ENABLED) || wc.level == 0) return
 
                 e.isCancelled = true
                 player.swingMainHand()
-                player.playConfigSound("ColoredWater.sound")
+                player.playConfigSound(FILL_SOUND)
 
                 if (player.gameMode != GameMode.CREATIVE) player.inventory.removeItem(ItemStack(item.type, 1))
 
@@ -64,7 +69,7 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
                     }
 
                     Util.runLater(plugin.config.getInt(ANIM_DELAY).toLong()) {
-                        player.playConfigSound(ANIM_SOUND)
+                        player.playConfigSound(SPLASH_SOUND)
 
                         foliaLib.scheduler.runAtLocation(block.location) {
                             dropped.remove()
@@ -86,14 +91,14 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
             }
 
             Material.GLASS_BOTTLE -> {
-                if (!plugin.config.getBoolean("ColoredPotionMechanic.enabled") || wc.level == 0) return
+                if (!plugin.config.getBoolean(POTION_ENABLED) || wc.level == 0) return
 
                 e.isCancelled = true
                 player.swingMainHand()
-                player.playConfigSound("ColoredPotionMechanic.sound")
+                player.playConfigSound(EMPTYING_SOUND)
                 wc.level -= 1
 
-                val potion = Util.getColoredPotion(wc.color)
+                val potion = DyeUtil.getColoredPotion(wc.color)
                 if (player.inventory.itemInMainHand.amount > 1 || player.gameMode == GameMode.CREATIVE) {
                     player.inventory.addItem(potion)
                     if (player.gameMode != GameMode.CREATIVE) player.inventory.removeItem(ItemStack(Material.GLASS_BOTTLE, 1))
@@ -101,27 +106,27 @@ class CauldronHandler(private val plugin: JavaPlugin) : Listener {
             }
 
             Material.POTION -> {
-                if (!plugin.config.getBoolean("ColoredPotionMechanic.enabled") || wc.level == 3) return
+                if (!plugin.config.getBoolean(POTION_ENABLED) || wc.level == 3) return
 
                 e.isCancelled = true
                 player.swingMainHand()
-                player.playConfigSound("ColoredWater.sound")
+                player.playConfigSound(FILL_SOUND)
 
-                wc.mix(Util.getPotionColor(item))
+                wc.mix(DyeUtil.getPotionColor(item))
                 wc.level += 1
 
                 if (player.gameMode != GameMode.CREATIVE) player.inventory.setItem(player.inventory.heldItemSlot, ItemStack(Material.GLASS_BOTTLE))
             }
 
             Material.LEATHER_HORSE_ARMOR -> {
-                if (!plugin.config.getBoolean("DyeItemsMechanic.enabled") || wc.level == 0) return
+                if (!plugin.config.getBoolean(DYE_ITEMS_ENABLED) || wc.level == 0) return
 
                 e.isCancelled = true
                 player.swingMainHand()
-                player.playConfigSound("ColoredPotionMechanic.sound")
+                player.playConfigSound(EMPTYING_SOUND)
                 wc.level -= 1
 
-                player.inventory.setItem(player.inventory.heldItemSlot, Util.adjustItemColor(wc.color, item))
+                player.inventory.setItem(player.inventory.heldItemSlot, DyeUtil.adjustItemColor(wc.color, item))
             }
 
             Material.BUCKET -> {

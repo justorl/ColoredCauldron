@@ -7,16 +7,25 @@ ColoredWater:
 # Изначальный цвет воды. Прозрачен, и появляется только при первом изменении цвета
 # The initial water color. By default, it is transparent and only appears when the color is changed
   default-color: "#26478a"
-  sound: item.bottle.fill
 ColoredPotionMechanic:
+# Возможность заливать в котёл зелья с цветом и брать цветную воду бутылочкой
+# The ability to pour potions with a color into a cauldron and take colored water with a bottle
   enabled: true
-  sound: item.bottle.empty
 DyeWaterMechanic:
+# Покраска воды в котлах
+# Colored water in cauldrons
   enabled: true
   animation:
     enabled: true
     height: 1
     delay: 7
-    sound: entity.generic.splash
 DyeItemsMechanic:
+# Возможность красить предметы цветной водой в котле. К примеру: Кожаная броня
+# В котле нельзя красить вещи, которые красятся 16 дефолтными цветами. К примеру: Шерсть
+# The ability to dye items using colored water in a cauldron. For example, leather armor.
+# Items that can only be dyed in 16 colors cannot be dyed in a cauldron. For example: wool.
   enabled: true
+Sounds:
+  fill-sound: item.bottle.fill
+  splash-sound: entity.generic.splash
+  emptying-sound: item.bottle.empty

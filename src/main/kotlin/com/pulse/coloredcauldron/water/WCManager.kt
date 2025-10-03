@@ -2,6 +2,7 @@ package com.pulse.coloredcauldron.water
 
 import com.pulse.coloredcauldron.CCInstance.configManager
 import com.pulse.coloredcauldron.CCInstance.waterStorage
+import com.pulse.coloredcauldron.config.ConfigKeys.DEFAULT_COLOR
 import com.pulse.coloredcauldron.logic.Util
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
@@ -12,7 +13,7 @@ object WCManager {
     fun spawn(location: Location): WaterCauldron {
         val world = location.world
         val displayEntity = world.spawnEntity(location, EntityType.TEXT_DISPLAY) as TextDisplay
-        val defaultColor = configManager.getString("ColoredWater.default-color")
+        val defaultColor = configManager.getString(DEFAULT_COLOR)
 
         displayEntity.backgroundColor = Util.hex2rgb(defaultColor, 0)
 
