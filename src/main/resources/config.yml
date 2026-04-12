@@ -7,6 +7,7 @@ ColoredWater:
 # Изначальный цвет воды. Прозрачен, и появляется только при первом изменении цвета
 # The initial water color. By default, it is transparent and only appears when the color is changed
   default-color: "#26478a"
+  ratelimit: 50
 ColoredPotionMechanic:
 # Возможность заливать в котёл зелья с цветом и брать цветную воду бутылочкой
 # The ability to pour potions with a color into a cauldron and take colored water with a bottle
@@ -17,7 +18,7 @@ DyeWaterMechanic:
   enabled: true
   animation:
     enabled: true
-    height: 1
+    height: 1.0
     delay: 7
 DyeItemsMechanic:
 # Возможность красить предметы цветной водой в котле. К примеру: Кожаная броня

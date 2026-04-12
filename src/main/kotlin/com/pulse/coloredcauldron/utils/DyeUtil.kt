@@ -1,4 +1,4 @@
-package com.pulse.coloredcauldron.logic
+package com.pulse.coloredcauldron.utils
 
 import org.bukkit.Color
 import org.bukkit.DyeColor
@@ -16,6 +16,8 @@ object DyeUtil {
             itemMeta = meta
         }
     }
+
+    fun Color.alpha(alpha: Int) = setAlpha(alpha)
 
     fun getColoredPotion(color: Color): ItemStack {
         return ItemStack(Material.POTION).apply {
