@@ -63,7 +63,11 @@ class CauldronListener : AutoListener() {
 
                 if (Config.DyeWaterMechanic.animEnabled) {
                     val dropped = block.world.dropItem(
-                        block.location.clone().add(0.5, Config.DyeWaterMechanic.animHeight, 0.5),
+                        block.location.clone().add(
+                            0.5,
+                            Config.DyeWaterMechanic.animHeight,
+                            0.5
+                        ),
                         ItemStack(item.type)
                     ).apply {
                         pickupDelay = Int.MAX_VALUE
@@ -77,18 +81,20 @@ class CauldronListener : AutoListener() {
                             dropped.remove()
                             cauldron.mix(item.type.dyeColor()!!)
 
-                            block.world.spawnParticle(
-                                Particle.DUST,
-                                block.location.clone().add(0.5, 0.95, 0.5),
-                                7,
-                                0.15,
-                                0.15,
-                                0.15,
-                                Particle.DustOptions(cauldron.color, 0.95f)
-                            )
+                            Particle.DUST.builder()
+                                .location(block.location.clone()
+                                    .add(0.5, 0.95, 0.5)
+                                )
+                                .count(7)
+                                .offset(0.15, 0.15, 0.15)
+                                .extra(0.0)
+                                .data(Particle.DustOptions(
+                                    cauldron.color, 0.95f
+                                ))
+                                .receivers(16)
+                                .spawn()
                         }
                     }
-
                 } else cauldron.mix(item.type.dyeColor()!!)
             }
 
