@@ -7,7 +7,7 @@ import com.pulse.utilslib.paper.plugin.PaperPlugin
 
 class ColoredCauldron : PaperPlugin("coloredcauldron") {
     override fun enable() {
-        Config.reload()
+        Config.init()
         LangManager.reload()
         CustomBlockData.registerListener(this)
     }

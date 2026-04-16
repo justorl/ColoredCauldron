@@ -21,8 +21,8 @@ dependencies {
     compileOnly(kotlin("stdlib"))
 
     // utils
-    implementation("com.github.justorl:UtilsLib:2.3.8")
-    compileOnly("com.tcoded:FoliaLib:0.5.1")
+    implementation("com.github.justorl:UtilsLib:2.3.12")
+    implementation("com.tcoded:FoliaLib:0.5.1")
     compileOnly("com.jeff-media:MorePersistentDataTypes:2.4.0")
     compileOnly("com.jeff-media:custom-block-data:2.2.4")
 
@@ -44,6 +44,7 @@ tasks {
         archiveClassifier.set("")
 
         relocate("com.pulse.utilslib", "com.pulse.coloredcauldron.shadow.utilslib")
+        relocate("com.tcoded.folialib", "com.pulse.coloredcauldron.shadow.folialib")
 
         dependencies {
             exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))

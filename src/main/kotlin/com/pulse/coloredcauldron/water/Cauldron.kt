@@ -1,7 +1,7 @@
 package com.pulse.coloredcauldron.water
 
 import com.pulse.coloredcauldron.config.Config
-import com.pulse.coloredcauldron.utils.DyeUtil.alpha
+import com.pulse.coloredcauldron.utils.alpha
 import com.pulse.utilslib.paper.plugin.PluginContext.foliaLib
 import org.bukkit.Color
 import org.bukkit.DyeColor
@@ -19,7 +19,6 @@ data class Cauldron(
     var color: Color
         get() = entity.backgroundColor ?: Color.WHITE
         set(value) {
-            update()
             entity.backgroundColor = value
         }
 
@@ -45,7 +44,7 @@ data class Cauldron(
     fun move(to: Location) {
         foliaLib.scheduler.teleportAsync(
             entity,
-            to.setRotation(0F, -90F)
+            to.setRotation(0F, 90F)
         )
     }
 
@@ -59,7 +58,7 @@ data class Cauldron(
 
         var newColor = dye
 
-        if (newColor == (Color.WHITE))
+        if (newColor == Color.WHITE)
             newColor = Config.ColoredWater.defaultColor.alpha(Config.ColoredWater.alpha)
         else if (level != 0)
             newColor = currentColor.mixColors(dye)
@@ -91,9 +90,9 @@ data class Cauldron(
 
         entity.transformation = entity.transformation.apply {
             translation.set(
-                0.45f,
-                -0.90F,
-                waterHeight.getOrElse(level) { waterHeight[0] }
+                0f,
+                0.45F,
+                (waterHeight.getOrElse(level) { waterHeight[0] }) - 0.65f
             )
         }
     }

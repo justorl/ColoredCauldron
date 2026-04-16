@@ -19,13 +19,13 @@ class CoreCommand: AutoCommand() {
                     Config.reload()
                     LangManager.reload()
 
-                    sender.send("reload")
+                    sender.send("messages.reload")
                 }
             }
 
             literalArgument("version") {
                 anyExecutor { sender, args ->
-                    sender.send("version") {
+                    sender.send("messages.version") {
                         "version" by PluginContext.plugin.pluginMeta.version.cmp()
                     }
                 }

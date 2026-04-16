@@ -1,6 +1,6 @@
 package com.pulse.coloredcauldron.config
 
-import com.pulse.coloredcauldron.utils.Util
+import com.pulse.coloredcauldron.utils.hex2rgb
 import com.pulse.utilslib.paper.plugin.PluginContext.plugin
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -36,10 +36,6 @@ object Config {
         var enabled: Boolean
             get() = get("ColoredPotionMechanic.enabled") { plugin.config.getBoolean(it) }
             set(v) = set("ColoredPotionMechanic.enabled", v)
-
-        var animEnabled: Boolean
-            get() = get("ColoredPotionMechanic.animation.enabled") { plugin.config.getBoolean(it) }
-            set(v) = set("ColoredPotionMechanic.animation.enabled", v)
     }
 
     object DyeItemsMechanic {
@@ -65,7 +61,7 @@ object Config {
     object ColoredWater {
         var defaultColor: Color
             get() = get("ColoredWater.default-color") {
-                Util.hex2rgb(plugin.config.getString(it) ?: "#FFFFFF", 255)
+                hex2rgb(plugin.config.getString(it) ?: "#FFFFFF", 255)
             }
             set(v) = set("ColoredWater.default-color", v)
 

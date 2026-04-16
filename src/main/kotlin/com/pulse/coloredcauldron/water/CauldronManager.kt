@@ -2,21 +2,18 @@ package com.pulse.coloredcauldron.water
 
 import com.jeff_media.morepersistentdatatypes.DataType
 import com.pulse.coloredcauldron.config.Config
-import com.pulse.coloredcauldron.utils.DyeUtil.alpha
-import com.pulse.coloredcauldron.utils.Util.pdc
+import com.pulse.coloredcauldron.utils.alpha
+import com.pulse.coloredcauldron.utils.pdc
 import com.pulse.utilslib.adventure.extension.cmp
 import com.pulse.utilslib.paper.plugin.PluginContext
-import com.pulse.utilslib.paper.plugin.PluginContext.foliaLib
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.TextDisplay
-import org.bukkit.persistence.PersistentDataType
 
 object CauldronManager {
-
     val PDC_ENTITY = NamespacedKey.fromString("cauldron_entity", PluginContext.plugin)!!
 
     fun spawn(location: Location): Cauldron {
@@ -32,7 +29,9 @@ object CauldronManager {
             scale.set(2.85f, 3.45f, 1f)
             translation.set(0.45f, -0.90f, 0.939f)
         }
+        
         cauldron.move(entity.location)
+        cauldron.update()
 
         block.pdc().set(
             PDC_ENTITY,
@@ -56,9 +55,5 @@ object CauldronManager {
         val entity = Bukkit.getEntity(uuid) as? TextDisplay? ?: return null
 
         return Cauldron(entity, location.block)
-    }
-
-    fun remove(location: Location) {
-        get(location)?.remove()
     }
 }

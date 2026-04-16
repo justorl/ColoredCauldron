@@ -1,0 +1,12 @@
+name: ColoredCauldron
+version: '${version}'
+main: com.pulse.coloredcauldron.ColoredCauldron
+loader: com.pulse.coloredcauldron.ColoredCauldronLoader
+api-version: '1.21'
+authors: [o_orl]
+description: core
+dependencies:
+  server:
+    CoreProtect:
+      load: BEFORE
+      required: false

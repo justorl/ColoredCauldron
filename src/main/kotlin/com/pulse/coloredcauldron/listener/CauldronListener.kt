@@ -2,17 +2,18 @@ package com.pulse.coloredcauldron.listener
 
 import com.pulse.coloredcauldron.config.Config
 import com.pulse.coloredcauldron.config.Config.configSound
-import com.pulse.coloredcauldron.utils.DyeUtil
-import com.pulse.coloredcauldron.utils.DyeUtil.dyeColor
+import com.pulse.coloredcauldron.utils.*
 import com.pulse.coloredcauldron.water.CauldronManager
 import com.pulse.utilslib.core.extension.rateLimit
 import com.pulse.utilslib.paper.extension.getShift
 import com.pulse.utilslib.paper.extension.runLater
+import com.pulse.utilslib.paper.extension.toHex
 import com.pulse.utilslib.paper.listener.auto.AutoListener
 import com.pulse.utilslib.paper.plugin.PluginContext.foliaLib
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.block.data.Levelled
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.*
 import org.bukkit.event.player.PlayerInteractEvent
@@ -24,7 +25,7 @@ class CauldronListener : AutoListener() {
     @EventHandler
     fun onCauldronPlace(e: BlockPlaceEvent) {
         if (e.block.type == Material.CAULDRON)
-            CauldronManager.spawn(e.block.location)
+            CauldronManager.spawn(e.block.location.toCenterLocation())
     }
 
     @EventHandler
@@ -39,18 +40,18 @@ class CauldronListener : AutoListener() {
 
         val player = e.player
 
-        if (player.gameMode == GameMode.SPECTATOR ||
-            player.gameMode == GameMode.ADVENTURE) return
+        if (player.gameMode == GameMode.SPECTATOR) return
 
         val block = e.clickedBlock ?: return
         val item = e.item ?: return
 
         val cauldron = CauldronManager.get(block.location) ?: return
 
-        if (!rateLimit("cauldron_use:${player.uniqueId}", 100)) return
+        if (!rateLimit("cauldron_use:${player.uniqueId}", Config.ColoredWater.rateLimit.toLong())) return
 
+        cauldron.update()
         when (item.type) {
-            in DyeUtil.dyeColors.keys -> {
+            in dyeColors.keys -> {
                 if (!Config.DyeWaterMechanic.enabled || cauldron.level == 0) return
 
                 e.isCancelled = true
@@ -106,7 +107,8 @@ class CauldronListener : AutoListener() {
                 player.configSound(Config.Sounds.emptying)
                 cauldron.level -= 1
 
-                val potion = DyeUtil.getColoredPotion(cauldron.color)
+                val potion = getColoredPotion(cauldron.color)
+
                 if (player.inventory.itemInMainHand.amount > 1 || player.gameMode == GameMode.CREATIVE) {
                     player.inventory.addItem(potion)
                     if (player.gameMode != GameMode.CREATIVE) player.inventory.removeItem(
@@ -122,7 +124,7 @@ class CauldronListener : AutoListener() {
                 player.swingMainHand()
                 player.configSound(Config.Sounds.fill)
 
-                cauldron.mix(DyeUtil.getPotionColor(item))
+                cauldron.mix(item.getPotionColor())
                 cauldron.level += 1
 
                 if (player.gameMode != GameMode.CREATIVE) player.inventory.setItem(
@@ -140,7 +142,7 @@ class CauldronListener : AutoListener() {
 
                 player.inventory.setItem(
                     player.inventory.heldItemSlot,
-                    DyeUtil.adjustItemColor(cauldron.color, item)
+                    item.colored(cauldron.color)
                 )
             }
 
@@ -150,6 +152,26 @@ class CauldronListener : AutoListener() {
             }
 
             else -> return
+        }
+    }
+
+    @EventHandler
+    fun onCauldronLevelChange(e: CauldronLevelChangeEvent) {
+        val cauldron = CauldronManager.get(e.block.location) ?: return
+
+        val blockData = e.newState.blockData
+
+        val new = when {
+            blockData is Levelled -> blockData.level
+            blockData.material == Material.CAULDRON -> 0
+            else -> 3
+        }
+
+        cauldron.update()
+
+        if (new > 0 && cauldron.color.alpha == 0) {
+            cauldron.color =
+                Config.ColoredWater.defaultColor.alpha(Config.ColoredWater.alpha)
         }
     }
 

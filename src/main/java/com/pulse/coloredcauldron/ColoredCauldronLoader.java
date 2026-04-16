@@ -8,7 +8,7 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.jetbrains.annotations.NotNull;
 
-public class PulseCoreLoader implements PluginLoader {
+public class ColoredCauldronLoader implements PluginLoader {
     @Override
     public void classloader(@NotNull PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();
@@ -26,6 +26,7 @@ public class PulseCoreLoader implements PluginLoader {
 
         // repos
         resolver.addRepository(new RemoteRepository.Builder("paper", "default", "https://repo.papermc.io/repository/maven-public/").build());
+        resolver.addRepository(new RemoteRepository.Builder("tcoded", "default", "https://repo.tcoded.com/releases").build());
 
         classpathBuilder.addLibrary(resolver);
     }
